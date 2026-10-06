@@ -70,7 +70,7 @@ ONLINE    question ──► vector search ─┐
 - **Hybrid retrieval** ([src/docsage/retrieval](src/docsage/retrieval)): BM25 and cosine similarity over local `bge-small-en-v1.5` embeddings, merged with reciprocal rank fusion (k=60). An optional cross-encoder re-ranker (`jina-reranker-v1-turbo-en`, top 30, passages truncated to 1,000 chars) is behind `USE_RERANKER`.
 - **Refusal**: if the best vector cosine is below `REFUSAL_THRESHOLD` (0.55), the system refuses without calling the LLM. Cosine is used instead of the fused score because fused and re-ranker scores aren't comparable across queries.
 - **Answering** ([src/docsage/generation](src/docsage/generation)): the LLM must put a `[DOC, p.N]` citation on every factual sentence and ignore instructions found inside the passages. Each citation is mapped back to a retrieved passage, and any that don't match are dropped and reported in `invalid_citations`.
-- **Tracing** ([src/docsage/observability](src/docsage/observability)): one Langfuse trace per question, with spans for retrieval, re-ranking, the evidence check and the LLM call (model, tokens, billed cost), plus a `citations_valid` score. It does nothing unless Langfuse keys are set.
+- **Tracing** ([src/docsage/observability](src/docsage/observability)): one Langfuse trace per question, with spans for retrieval, re-ranking, the evidence check and the LLM call (model, tokens, billed cost), plus a `citations_valid` score. Every trace carries the session, tags (`api`, `streamlit`, `eval`), environment and release; provider failures are recorded at level ERROR; reasoning-model thinking is kept on the generation. API keys are redacted before export. It does nothing unless Langfuse keys are set. Questions typed into a public demo are sent to Langfuse, so disclose that to visitors or leave tracing off for the hosted app.
 
 ## Corpus
 
@@ -144,6 +144,11 @@ CLOUDFLARE_API_TOKEN = "..."
 CLOUDFLARE_ACCOUNT_ID = "..."
 DEMO_MODE = "1"             # hides developer controls and hides cost
 DEMO_MAX_QUESTIONS = "20"   # per visitor, protects the free LLM quota
+# optional tracing:
+LANGFUSE_PUBLIC_KEY = "pk-lf-..."
+LANGFUSE_SECRET_KEY = "sk-lf-..."
+LANGFUSE_HOST = "https://cloud.langfuse.com"
+LANGFUSE_ENVIRONMENT = "production"
 ```
 
 `requirements.txt` holds the runtime dependencies only. In a simulated hosted run (no `.env`, secrets from `secrets.toml`) the app used about 310 MB of memory against the free tier's 690 MB guarantee.
@@ -164,7 +169,7 @@ DEMO_MAX_QUESTIONS = "20"   # per visitor, protects the free LLM quota
 | Hybrid retrieval, optional re-ranker | Done |
 | Cited answers, refusal, `/ask` API | Done, tested with a stubbed LLM and a few live questions |
 | Streamlit UI | Done (question box, clickable sources, debug view, sidebar toggles) |
-| Langfuse tracing | Done, verified locally; not yet confirmed against a real Langfuse project |
+| Langfuse tracing | Done; real traces fetched back from Langfuse and audited against its best-practices checklist (nesting, types, usage and cost, scores, ERROR levels) |
 | Tests and lint | 34 tests passing, ruff clean; CI workflow written, not yet run on GitHub |
 | Docker | Dockerfile and `.dockerignore` written, not tested |
 | Golden set (30 questions) and eval harness (`make eval`) | Done; first run on the 25 dev questions complete; 5 holdout questions not yet run; judge hand-check not done |

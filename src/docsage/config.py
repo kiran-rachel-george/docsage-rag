@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     langfuse_secret_key: str = ""
     langfuse_host: str = "https://cloud.langfuse.com"
     langfuse_environment: str = "development"  # production | staging | development
+    langfuse_release: str = "0.1.0"  # shown on every trace; bump (or set to a git sha) per release
 
     raw_dir: Path = ROOT / "data" / "raw"
     index_dir: Path = ROOT / "data" / "index"

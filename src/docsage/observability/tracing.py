@@ -45,6 +45,7 @@ def _client():
         secret_key=settings.langfuse_secret_key,
         base_url=settings.langfuse_host,
         environment=settings.langfuse_environment,
+        release=settings.langfuse_release or None,  # which code version produced a trace
         mask=_mask,
     )
 

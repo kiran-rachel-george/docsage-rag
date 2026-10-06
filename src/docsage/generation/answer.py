@@ -159,7 +159,11 @@ def generate(question: str, hits: list[Hit], client=None) -> Generation:
         input=messages,
     ) as gen:
         data = client({"model": settings.llm_model, **params, "messages": messages})
-        text = normalize_answer(data["choices"][0]["message"]["content"] or "").strip()
+        message = data["choices"][0]["message"]
+        text = normalize_answer(message["content"] or "").strip()
+        # reasoning models (gpt-oss, DeepSeek) return their thinking separately; keep it on the
+        # generation so a bad answer can be debugged (Langfuse best practice)
+        reasoning = message.get("reasoning") or message.get("reasoning_content") or ""
         tin, tout, cost = usage_and_cost(data, settings.llm_model)
         result = Generation(text, tin, tout, cost)
         gen.update(
@@ -171,6 +175,7 @@ def generate(question: str, hits: list[Hit], client=None) -> Generation:
             metadata={
                 "provider": settings.llm_provider,
                 "finish_reason": data["choices"][0].get("finish_reason"),
+                **({"reasoning": reasoning[:4000]} if reasoning else {}),
             },
         )
     return result

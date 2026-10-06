@@ -76,5 +76,10 @@ class Retriever:
                 metadata={"model": settings.reranker_model},
             ) as span:
                 hits = rerank(query, hits)
-                span.update(output=[(h.chunk.doc, h.chunk.page, round(h.score, 3)) for h in hits[:k]])
+                span.update(
+                    output=[
+                        {"doc": h.chunk.doc, "page": h.chunk.page, "rerank_score": round(h.score, 3)}
+                        for h in hits[:k]
+                    ]
+                )
         return hits[:k]
