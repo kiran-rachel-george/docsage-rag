@@ -131,6 +131,23 @@ Eight of the 25 questions fail in all four configs. What actually happens:
 4. **Rounded vs exact figures.** For Infosys's employees the model answered "over 3,25,000" (a figure that appears in the report on p.10) while the expected exact value 3,28,594 is on the same page; the judge failed it. Arguably a judge-strictness issue rather than a system error.
 5. **Topical but unanswerable questions slip past the threshold.** "What is Wipro's FY27 guidance?" scores a cosine of about 0.75, so only the LLM's refusal instruction catches it (it did, in every config). Off-topic questions (about 0.45) are caught by the threshold.
 
+## Deploy the demo (Streamlit Community Cloud)
+
+1. Push this repo to GitHub (the prebuilt heading index in `data/index/heading/` is committed on purpose; `.env`, the PDFs and the fixed index are not).
+2. On [share.streamlit.io](https://share.streamlit.io) click **Create app**, choose this repo, branch `main`, main file `app/streamlit_app.py`.
+3. In **Advanced settings** pick Python 3.12 and paste your secrets (TOML), for example:
+
+```toml
+LLM_PROVIDER = "cloudflare"
+LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+CLOUDFLARE_API_TOKEN = "..."
+CLOUDFLARE_ACCOUNT_ID = "..."
+DEMO_MODE = "1"             # hides developer controls and hides cost
+DEMO_MAX_QUESTIONS = "20"   # per visitor, protects the free LLM quota
+```
+
+`requirements.txt` holds the runtime dependencies only. In a simulated hosted run (no `.env`, secrets from `secrets.toml`) the app used about 310 MB of memory against the free tier's 690 MB guarantee.
+
 ## Tradeoffs
 
 - **Local embeddings and re-ranker** (no API key, free) vs speed: indexing is slow on CPU, so the index is built once and shipped, not built at deploy time.

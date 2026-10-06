@@ -1,0 +1,9 @@
+# Runtime dependencies for the hosted Streamlit demo (Streamlit Community Cloud reads this file
+# in preference to pyproject.toml). Streamlit itself is pre-installed there.
+# Not needed at runtime: pymupdf (index building), fastapi/uvicorn (the API), pyyaml (evals).
+numpy
+fastembed
+rank-bm25
+httpx
+pydantic-settings
+langfuse>=4

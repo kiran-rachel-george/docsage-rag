@@ -2,14 +2,19 @@
 .env
 .env.*
 !.env.example
+.streamlit/secrets.toml
 
 # Raw source PDFs (publicly available; link to originals instead of redistributing)
 data/raw/*
 !data/raw/.gitkeep
 
-# Built indexes
+# Built indexes: only the heading-aware index ships (the hosted demo needs it, ~8 MB)
 data/index/*
 !data/index/.gitkeep
+!data/index/heading/
+
+# Eval scratch files
+eval/results/.partial_*
 
 # Python / tooling
 __pycache__/
@@ -17,5 +22,7 @@ __pycache__/
 .venv/
 .pytest_cache/
 .ruff_cache/
-".claude/" 
-"skills-lock.json" 
+
+# Installed agent skill (tooling, not part of the app)
+.claude/
+skills-lock.json
