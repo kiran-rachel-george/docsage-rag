@@ -1,0 +1,22 @@
+# Secrets: never bake keys into the image (pass them at runtime with --env-file or -e)
+.env
+.env.*
+!.env.example
+
+# Raw source PDFs: not needed at runtime, only the built index in data/index is
+data/raw
+
+# VCS, CI and tooling
+.git
+.github
+.gitignore
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+
+# Docs and local artefacts
+docs
+eval/results
+*.docx

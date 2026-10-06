@@ -1,0 +1,18 @@
+[project]
+name = "docsage"
+version = "0.1.0"
+description = "Agentic RAG over long PDFs with page-level citations and evals"
+requires-python = ">=3.11"
+dependencies = [
+  "pymupdf", "rank-bm25", "numpy", "fastapi", "uvicorn", "streamlit",
+  "pydantic-settings", "langfuse>=4", "pyyaml", "httpx", "fastembed",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100

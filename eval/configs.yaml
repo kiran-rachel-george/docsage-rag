@@ -1,0 +1,27 @@
+# One entry per experiment (one README results row each)
+experiments:
+  - name: baseline
+    chunking: fixed
+    use_bm25: false
+    use_reranker: false
+    use_agent: false
+  - name: heading-aware
+    chunking: heading
+    use_bm25: false
+    use_reranker: false
+    use_agent: false
+  - name: hybrid
+    chunking: heading
+    use_bm25: true
+    use_reranker: false
+    use_agent: false
+  - name: reranker
+    chunking: heading
+    use_bm25: true
+    use_reranker: true
+    use_agent: false
+  - name: agent
+    chunking: heading
+    use_bm25: true
+    use_reranker: true
+    use_agent: true
