@@ -4,6 +4,8 @@ Agentic RAG over long PDFs, with page-level citations and measured quality. The 
 
 > **Status: work in progress.** Retrieval, answering, the API, the UI and the eval harness are built and a first full evaluation has been run (see [Results](#results)). **No PRD quality target is met yet**: cross-document questions are the main gap, and the query agent that addresses them is not built. See [Status](#status).
 
+**Live demo:** https://docsage-rag.streamlit.app/ (free hosting, so the first visit can take a minute to wake and load the search model; each visitor gets a limited number of questions).
+
 ## Problem
 
 Annual reports run to 200–550 pages each. A simple comparison such as "how did attrition change at each company this year?" means opening three PDFs and hunting through each. General chatbots answer fast but often invent figures or can't say where a number came from, which makes them unusable for anything you'd act on.
@@ -133,6 +135,8 @@ Eight of the 25 questions fail in all four configs. What actually happens:
 
 ## Deploy the demo (Streamlit Community Cloud)
 
+Deployed at https://docsage-rag.streamlit.app/. To deploy your own copy:
+
 1. Push this repo to GitHub (the prebuilt heading index in `data/index/heading/` is committed on purpose; `.env`, the PDFs and the fixed index are not).
 2. On [share.streamlit.io](https://share.streamlit.io) click **Create app**, choose this repo, branch `main`, main file `app/streamlit_app.py`.
 3. In **Advanced settings** pick Python 3.12 and paste your secrets (TOML), for example:
@@ -168,7 +172,7 @@ LANGFUSE_ENVIRONMENT = "production"
 | Ingestion, both chunkers, header/footer stripping | Done |
 | Hybrid retrieval, optional re-ranker | Done |
 | Cited answers, refusal, `/ask` API | Done, tested with a stubbed LLM and a few live questions |
-| Streamlit UI | Done (question box, clickable sources, debug view, sidebar toggles) |
+| Streamlit UI | Done and deployed on Streamlit Community Cloud (question box, clickable sources, hosted mode with a per-visitor question cap) |
 | Langfuse tracing | Done; real traces fetched back from Langfuse and audited against its best-practices checklist (nesting, types, usage and cost, scores, ERROR levels) |
 | Tests and lint | 34 tests passing, ruff clean; CI workflow written, not yet run on GitHub |
 | Docker | Dockerfile and `.dockerignore` written, not tested |
